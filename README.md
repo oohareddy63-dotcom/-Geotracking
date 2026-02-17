@@ -65,11 +65,6 @@ cd server
 npm install
 ```
 
-Create a `.env` file in the server directory:
-```env
-MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/geotracking?retryWrites=true&w=majority
-JWT_SECRET=your_jwt_secret_key
-PORT=5000
 ```
 
 Start the backend server:
