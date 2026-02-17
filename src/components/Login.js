@@ -16,6 +16,8 @@ import {
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import '../App.css';
+import API_BASE_URL from '../config/api';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -39,7 +41,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
       onLogin(response.data.user, response.data.token);
       toast.success('Login successful!');
     } catch (error) {
@@ -56,7 +58,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
         password,
         role
@@ -140,6 +142,7 @@ const Login = ({ onLogin }) => {
                   autoFocus
                   value={formData.email}
                   onChange={handleChange}
+                  className="input-glass"
                   sx={{ mb: 2 }}
                 />
               </motion.div>
@@ -160,6 +163,7 @@ const Login = ({ onLogin }) => {
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
+                  className="input-glass"
                   sx={{ mb: 2 }}
                 />
               </motion.div>
@@ -169,8 +173,8 @@ const Login = ({ onLogin }) => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
               >
-                <FormControl fullWidth required sx={{ mb: 3 }}>
-                  <InputLabel id="role-label">Role</InputLabel>
+                <FormControl fullWidth required sx={{ mb: 3 }} className="input-glass">
+                  <InputLabel id="role-label" sx={{ color: 'var(--text-secondary)' }}>Role</InputLabel>
                   <Select
                     labelId="role-label"
                     id="role"
@@ -178,6 +182,20 @@ const Login = ({ onLogin }) => {
                     value={formData.role}
                     label="Role"
                     onChange={handleChange}
+                    sx={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: '12px',
+                      color: 'var(--text-primary)',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--border-light)',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--border-glow)',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--primary)',
+                      },
+                    }}
                   >
                     <MenuItem value="manager">Manager</MenuItem>
                     <MenuItem value="employee">Employee</MenuItem>
@@ -194,14 +212,15 @@ const Login = ({ onLogin }) => {
                   type="submit"
                   fullWidth
                   variant="contained"
+                  className="btn-gradient"
                   sx={{
                     mt: 3,
                     mb: 2,
                     height: 48,
-                    background: 'linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)',
-                    '&:hover': {
-                      background: 'linear-gradient(45deg, #1565c0 30%, #1976d2 90%)',
-                    }
+                    borderRadius: '12px',
+                    fontWeight: 'bold',
+                    textTransform: 'none',
+                    fontSize: '16px',
                   }}
                   disabled={loading}
                 >

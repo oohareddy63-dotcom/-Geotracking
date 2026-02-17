@@ -43,6 +43,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import MapView from './MapView';
+import API_BASE_URL from '../config/api';
 
 const ManagerDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -65,11 +66,23 @@ const ManagerDashboard = ({ user, onLogout }) => {
     fetchDashboardData();
     fetchTasks();
     fetchUpdates();
+    fetchEmployees();
   }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/auth/employees`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setEmployees(response.data);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/reports/dashboard', {
+      const response = await axios.get(`${API_BASE_URL}/api/reports/dashboard`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setDashboardStats(response.data);
@@ -80,7 +93,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/tasks', {
+      const response = await axios.get(`${API_BASE_URL}/api/tasks`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setTasks(response.data);
@@ -91,7 +104,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
 
   const fetchUpdates = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/updates', {
+      const response = await axios.get(`${API_BASE_URL}/api/updates`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setUpdates(response.data);
@@ -103,7 +116,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
   const handleCreateTask = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/tasks', {
+      await axios.post(`${API_BASE_URL}/api/tasks`, {
         ...newTask,
         location: {
           latitude: parseFloat(newTask.latitude),
@@ -132,7 +145,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
 
   const handleUpdateStatus = async (updateId, status, comments = '') => {
     try {
-      await axios.put(`http://localhost:5000/api/updates/${updateId}/status`, {
+      await axios.put(`${API_BASE_URL}/api/updates/${updateId}/status`, {
         status,
         managerComments: comments
       }, {
@@ -153,13 +166,18 @@ const ManagerDashboard = ({ user, onLogout }) => {
     >
       <Card sx={{
         height: '100%',
-        background: `linear-gradient(135deg, ${color}20 0%, ${color}10 100%)`,
-        border: `1px solid ${color}30`,
+        backgroundColor: 'var(--bg-card)',
+        border: '1px solid var(--border-light)',
+        borderRadius: '14px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease',
         '&:hover': {
           transform: 'translateY(-4px)',
-          boxShadow: `0 8px 25px ${color}20`
-        },
-        transition: 'all 0.3s ease'
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+          border: `1px solid ${color}40`,
+        }
       }}>
         <CardContent>
           <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -186,7 +204,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
   );
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }} className="fade-in-up">
       {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <motion.div
@@ -194,10 +212,10 @@ const ManagerDashboard = ({ user, onLogout }) => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>
             Manager Dashboard
           </Typography>
-          <Typography variant="subtitle1" color="textSecondary">
+          <Typography variant="subtitle1" sx={{ color: 'var(--text-secondary)' }}>
             Welcome back, {user.name}
           </Typography>
         </motion.div>
@@ -206,11 +224,38 @@ const ManagerDashboard = ({ user, onLogout }) => {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setOpenTaskDialog(true)}
-            sx={{ mr: 2 }}
+            sx={{ 
+              mr: 2,
+              background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+              color: 'white',
+              borderRadius: '10px',
+              fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, var(--primary-dark), #153E75)',
+                boxShadow: '0 6px 16px rgba(37, 99, 235, 0.4)',
+              }
+            }}
           >
             Create Task
           </Button>
-          <IconButton onClick={onLogout} color="primary">
+          <IconButton 
+            onClick={onLogout}
+            sx={{
+              background: 'linear-gradient(135deg, var(--danger), #DC2626)',
+              color: 'white',
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
+                boxShadow: '0 6px 16px rgba(239, 68, 68, 0.4)',
+                transform: 'scale(1.1)',
+              }
+            }}
+          >
             <LogoutIcon />
           </IconButton>
         </Box>
@@ -257,7 +302,7 @@ const ManagerDashboard = ({ user, onLogout }) => {
       </Grid>
 
       {/* Main Content Tabs */}
-      <Paper sx={{ width: '100%', mb: 4 }}>
+      <Paper className="glass-card" sx={{ width: '100%', mb: 4, border: 'none', backdropFilter: 'none' }}>
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
@@ -296,32 +341,55 @@ const ManagerDashboard = ({ user, onLogout }) => {
               <Grid container spacing={2}>
                 {tasks.map((task) => (
                   <Grid item xs={12} md={6} lg={4} key={task._id}>
-                    <Card>
+                    <Card className="glass-card" sx={{ border: 'none', backdropFilter: 'none', height: '100%' }}>
                       <CardContent>
-                        <Typography variant="h6">{task.title}</Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                          Assigned to: {task.assignedTo?.name}
+                        <Typography variant="h6" gutterBottom>
+                          {task.title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                          <PeopleIcon sx={{ fontSize: 16, mr: 1 }} />
+                          {task.assignedTo?.name || 'Unassigned'}
                         </Typography>
                         <Box display="flex" alignItems="center" mb={1}>
-                          <LocationIcon sx={{ mr: 1, fontSize: 16 }} />
-                          <Typography variant="body2">
+                          <LocationIcon sx={{ mr: 1, fontSize: 16, color: 'var(--accent)' }} />
+                          <Typography variant="body2" sx={{ fontFamily: 'monospace', color: 'var(--text-secondary)' }}>
                             {task.location?.latitude?.toFixed(4)}, {task.location?.longitude?.toFixed(4)}
                           </Typography>
                         </Box>
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
                           <Chip
                             label={task.status}
-                            color={task.status === 'completed' ? 'success' : 'primary'}
+                            color={task.status === 'completed' ? 'success' : task.status === 'in_progress' ? 'warning' : 'info'}
                             size="small"
+                            sx={{
+                              background: task.status === 'completed' ? 'var(--success)' : 
+                                       task.status === 'in_progress' ? 'var(--warning)' : 
+                                       'var(--primary)',
+                              color: 'white',
+                              fontWeight: 'bold'
+                            }}
                           />
-                          <Typography variant="body2">
-                            {task.completionPercentage}%
-                          </Typography>
+                          <Box display="flex" alignItems="center">
+                            <Typography variant="body2" sx={{ mr: 1, color: 'var(--text-secondary)' }}>
+                              {task.completionPercentage}%
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: 'var(--primary)' }}>
+                              {task.priority?.toUpperCase()}
+                            </Typography>
+                          </Box>
                         </Box>
                         <LinearProgress
                           variant="determinate"
                           value={task.completionPercentage}
-                          sx={{ mt: 1 }}
+                          sx={{
+                            mt: 1,
+                            height: 8,
+                            borderRadius: 4,
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            '& .MuiLinearProgress-bar': {
+                              background: `linear-gradient(90deg, var(--${task.status === 'completed' ? 'success' : task.status === 'in_progress' ? 'warning' : 'primary'}), var(--accent))`
+                            }
+                          }}
                         />
                       </CardContent>
                     </Card>
@@ -397,15 +465,19 @@ const ManagerDashboard = ({ user, onLogout }) => {
 
       {/* Create Task Dialog */}
       <Dialog open={openTaskDialog} onClose={() => setOpenTaskDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Create New Task</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+        <DialogTitle className="glass-card" sx={{ m: 0, p: 2, background: 'var(--bg-card)', backdropFilter: 'none', border: 'none', color: 'var(--text-primary)' }}>
+          Create New Task
+        </DialogTitle>
+        <DialogContent dividers className="glass-card" sx={{ p: 3, background: 'var(--bg-card)', backdropFilter: 'none', border: 'none' }}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Task Title"
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                className="input-glass"
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -416,6 +488,8 @@ const ManagerDashboard = ({ user, onLogout }) => {
                 label="Description"
                 value={newTask.description}
                 onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                className="input-glass"
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -425,6 +499,8 @@ const ManagerDashboard = ({ user, onLogout }) => {
                 type="number"
                 value={newTask.latitude}
                 onChange={(e) => setNewTask({ ...newTask, latitude: e.target.value })}
+                className="input-glass"
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -434,6 +510,8 @@ const ManagerDashboard = ({ user, onLogout }) => {
                 type="number"
                 value={newTask.longitude}
                 onChange={(e) => setNewTask({ ...newTask, longitude: e.target.value })}
+                className="input-glass"
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -443,18 +521,38 @@ const ManagerDashboard = ({ user, onLogout }) => {
                 type="number"
                 value={newTask.geoFenceRadius}
                 onChange={(e) => setNewTask({ ...newTask, geoFenceRadius: parseInt(e.target.value) })}
+                className="input-glass"
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Assign to Employee</InputLabel>
+              <FormControl fullWidth className="input-glass">
+                <InputLabel sx={{ color: 'var(--text-secondary)' }}>Assign to Employee</InputLabel>
                 <Select
                   value={newTask.assignedTo}
                   onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+                  displayEmpty
+                  sx={{
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '12px',
+                    color: 'var(--text-primary)',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--border-light)',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--border-glow)',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--primary)',
+                    },
+                  }}
                 >
+                  <MenuItem value="" disabled>
+                    <em>Select Employee</em>
+                  </MenuItem>
                   {employees.map((emp) => (
                     <MenuItem key={emp._id} value={emp._id}>
-                      {emp.name}
+                      {emp.name} ({emp.email})
                     </MenuItem>
                   ))}
                 </Select>
@@ -462,9 +560,11 @@ const ManagerDashboard = ({ user, onLogout }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenTaskDialog(false)}>Cancel</Button>
-          <Button onClick={handleCreateTask} variant="contained" disabled={loading}>
+        <DialogActions className="glass-card" sx={{ p: 2, background: 'var(--bg-card)', backdropFilter: 'none', border: 'none' }}>
+          <Button onClick={() => setOpenTaskDialog(false)} className="input-glass" sx={{ borderRadius: '8px', minWidth: '80px' }}>
+            Cancel
+          </Button>
+          <Button onClick={handleCreateTask} className="btn-gradient" disabled={loading} sx={{ borderRadius: '8px', minWidth: '120px' }}>
             {loading ? 'Creating...' : 'Create Task'}
           </Button>
         </DialogActions>

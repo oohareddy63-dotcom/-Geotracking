@@ -14,30 +14,88 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2',
+      main: '#6366f1',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#8b5cf6',
     },
     background: {
       default: '#f5f5f5',
-      paper: 'rgba(255, 255, 255, 0.8)',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: '#000000',
+      secondary: '#333333',
     },
   },
   typography: {
     fontFamily: '"Inter", "Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
   },
   shape: {
-    borderRadius: 12,
+    borderRadius: 16,
   },
   components: {
     MuiCard: {
       styleOverrides: {
         root: {
-          backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(12px) saturate(180%)',
+          backgroundColor: '#ffffff',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
+          borderRadius: '16px',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(12px) saturate(180%)',
+          backgroundColor: '#ffffff',
+          border: '1px solid rgba(0, 0, 0, 0.12)',
+          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)',
+          borderRadius: '16px',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            background: 'rgba(0, 0, 0, 0.05)',
+            borderRadius: '12px',
+            '& fieldset': {
+              borderColor: 'rgba(0, 0, 0, 0.1)',
+            },
+            '&:hover fieldset': {
+              borderColor: 'rgba(99, 102, 241, 0.3)',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#6366f1',
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#333333',
+          },
+          '& .MuiInputBase-input': {
+            color: '#000000',
+          },
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+          color: 'white',
+          borderRadius: '12px',
+          fontWeight: 'bold',
+          textTransform: 'none',
+          fontSize: '16px',
+          boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)',
+          '&:hover': {
+            background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+            boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)',
+          },
         },
       },
     },
