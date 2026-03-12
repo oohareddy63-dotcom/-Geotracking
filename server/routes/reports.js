@@ -6,12 +6,10 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router();
-
 // Middleware to verify JWT
 const authenticate = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ message: 'Access denied' });
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
     req.user = decoded;
@@ -20,7 +18,6 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 // Get dashboard stats (manager only)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
