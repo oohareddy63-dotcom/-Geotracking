@@ -5,7 +5,9 @@ const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+
 const router = express.Router();
+
 // Middleware to verify JWT
 const authenticate = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -18,6 +20,7 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
+
 // Get dashboard stats (manager only)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
@@ -94,6 +97,7 @@ router.get('/performance/:employeeId', authenticate, async (req, res) => {
     // Calculate performance score (0-5 stars)
     const score = (geoVerificationRate + approvalRate + onTimeRate) / 60; // Average percentage / 20 for 5-star scale
 
+    
     res.json({
       employeeId,
       period: { start, end },
@@ -129,6 +133,7 @@ router.get('/summary', authenticate, async (req, res) => {
       endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + 1);
     } else {
+      
       // Weekly (Monday to Sunday)
       const day = reportDate.getDay();
       const diff = reportDate.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
@@ -167,6 +172,7 @@ router.get('/summary', authenticate, async (req, res) => {
       attendance,
       updates
     });
+    
   } catch (error) {
     console.error('Summary report error:', error);
     res.status(500).json({ message: 'Server error' });
