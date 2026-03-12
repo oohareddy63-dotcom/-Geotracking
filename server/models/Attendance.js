@@ -6,25 +6,31 @@ const attendanceSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  
   taskId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task'
   },
+  
   checkInTime: {
     type: Date,
     required: true
   },
+  
   checkOutTime: {
     type: Date
   },
+  
   checkInLocation: {
     latitude: Number,
     longitude: Number
   },
+  
   checkOutLocation: {
     latitude: Number,
     longitude: Number
   },
+  
   totalHours: {
     type: Number,
     default: 0
@@ -33,15 +39,18 @@ const attendanceSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  
   status: {
     type: String,
     enum: ['active', 'completed'],
     default: 'active'
   },
+  
   createdAt: {
     type: Date,
     default: Date.now
   },
+  
   updatedAt: {
     type: Date,
     default: Date.now
