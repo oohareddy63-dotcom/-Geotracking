@@ -9,7 +9,6 @@ import EmployeeDashboard from './components/EmployeeDashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -122,7 +121,6 @@ function App() {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
   };
-
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('token');
