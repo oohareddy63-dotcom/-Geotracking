@@ -17,10 +17,6 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   List,
   ListItem,
   ListItemText,
@@ -47,7 +43,6 @@ const EmployeeDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [tasks, setTasks] = useState([]);
   const [myUpdates, setMyUpdates] = useState([]);
-  const [dashboardStats, setDashboardStats] = useState({});
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [currentUpdateTask, setCurrentUpdateTask] = useState(null);
   const [updateData, setUpdateData] = useState({
@@ -58,30 +53,20 @@ const EmployeeDashboard = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchDashboardData();
     fetchTasks();
     fetchUpdates();
   }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/reports/employee-dashboard`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setDashboardStats(response.data);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    }
-  };
 
   const fetchTasks = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/tasks`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Employee tasks fetched:', response.data);
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      toast.error('Failed to fetch tasks');
     }
   };
 
@@ -90,9 +75,11 @@ const EmployeeDashboard = ({ user, onLogout }) => {
       const response = await axios.get(`${API_BASE_URL}/api/updates/my-updates`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Employee updates fetched:', response.data);
       setMyUpdates(response.data);
     } catch (error) {
       console.error('Error fetching updates:', error);
+      toast.error('Failed to fetch updates');
     }
   };
 

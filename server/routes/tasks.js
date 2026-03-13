@@ -36,25 +36,31 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
-// Create new task (manager only)
+// Create new task (manager or employee creating for themselves)
 router.post('/', authenticate, async (req, res) => {
   try {
-    if (req.user.role !== 'manager') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-
     const { title, description, assignedTo, location, geoFenceRadius, priority, deadline } = req.body;
 
-    // Validate that assignedTo is a valid ObjectId if provided
-    let assignedToId = assignedTo;
-    if (assignedTo && typeof assignedTo === 'string' && assignedTo.trim() !== '') {
-      // Verify it's a valid ObjectId format
-      if (!require('mongoose').Types.ObjectId.isValid(assignedTo)) {
-        return res.status(400).json({ message: 'Invalid employee ID format' });
+    let assignedToId;
+    
+    if (req.user.role === 'manager') {
+      // Managers can assign tasks to anyone
+      assignedToId = assignedTo;
+      // Validate that assignedTo is a valid ObjectId if provided
+      if (assignedTo && typeof assignedTo === 'string' && assignedTo.trim() !== '') {
+        // Verify it's a valid ObjectId format
+        if (!require('mongoose').Types.ObjectId.isValid(assignedTo)) {
+          return res.status(400).json({ message: 'Invalid employee ID format' });
+        }
+        assignedToId = assignedTo;
+      } else {
+        assignedToId = undefined; // Allow unassigned tasks
       }
-      assignedToId = require('mongoose').Types.ObjectId(assignedTo);
+    } else if (req.user.role === 'employee') {
+      // Employees can only create tasks for themselves
+      assignedToId = req.user.userId;
     } else {
-      assignedToId = undefined; // Allow unassigned tasks
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     const task = new Task({
@@ -75,6 +81,35 @@ router.post('/', authenticate, async (req, res) => {
     res.status(201).json(task);
   } catch (error) {
     console.error('Create task error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update task status
+router.put('/:id/status', authenticate, async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    // Check permissions
+    if (req.user.role !== 'manager' && task.assignedTo.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const { status } = req.body;
+    task.status = status;
+    
+    // If marking as completed, set completion to 100%
+    if (status === 'completed') {
+      task.completionPercentage = 100;
+    }
+
+    await task.save();
+    res.json(task);
+  } catch (error) {
+    console.error('Update task status error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

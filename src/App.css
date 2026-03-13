@@ -1,9 +1,9 @@
 :root {
-  --bg-primary: linear-gradient(135deg, #0c0c1d, #1a1a2e, #16213e);
-  --bg-secondary: rgba(25, 25, 45, 0.4);
-  --bg-card: rgba(30, 30, 50, 0.4);
-  --bg-card-hover: rgba(40, 40, 60, 0.6);
-  --border-light: rgba(255, 255, 255, 0.1);
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --border-light: rgba(0, 0, 0, 0.12);
   --border-glow: rgba(99, 102, 241, 0.3);
   
   /* Gradient colors */
@@ -16,14 +16,14 @@
   --danger: #ef4444;
   
   /* Text colors */
-  --text-primary: #ffffff;
-  --text-secondary: #a0aec0;
-  --text-muted: #718096;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
   
   /* Glassmorphism effects */
   --glass-backdrop: blur(12px) saturate(180%);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.12);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
   --glow-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
@@ -49,23 +49,11 @@
   overflow: hidden;
 }
 
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
-  z-index: -1;
-  border-radius: 18px;
-  opacity: 0.3;
-}
-
 .glass-card:hover {
   background: var(--bg-card-hover);
   box-shadow: var(--glass-shadow), var(--glow-shadow);
   transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
 /* Gradient Button Styles */

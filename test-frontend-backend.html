@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend-Backend Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .pending { color: #f59e0b; }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔗 Frontend-Backend Connection Test</h1>
+    
+    <div class="test-box">
+        <h2>Test 1: Backend Health Check</h2>
+        <button onclick="testBackendHealth()">Test Backend</button>
+        <div id="backend-result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 2: Login (Backend → MongoDB)</h2>
+        <button onclick="testLogin()">Test Login</button>
+        <div id="login-result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 3: Fetch Tasks (Full Stack)</h2>
+        <button onclick="testFetchTasks()">Test Fetch Tasks</button>
+        <div id="tasks-result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Quick Actions</h2>
+        <button onclick="window.location.href='http://localhost:3000'">Open React App</button>
+        <button onclick="window.location.href='http://localhost:5000'">Open Backend API</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let authToken = null;
+
+        async function testBackendHealth() {
+            const resultDiv = document.getElementById('backend-result');
+            resultDiv.innerHTML = '<p class="pending">Testing...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/`);
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Backend is responding!</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Backend connection failed!</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Make sure backend is running on port 5000</p>
+                `;
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '<p class="pending">Testing login...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'manager@example.com',
+                        password: 'password',
+                        role: 'manager'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Login successful!</p>
+                        <p>User: ${data.user.name}</p>
+                        <p>Role: ${data.user.role}</p>
+                        <p>Token: ${data.token.substring(0, 30)}...</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Login failed!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Login request failed!</p>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testFetchTasks() {
+            const resultDiv = document.getElementById('tasks-result');
+            
+            if (!authToken) {
+                resultDiv.innerHTML = '<p class="error">❌ Please login first!</p>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p class="pending">Fetching tasks...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/tasks`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Tasks fetched successfully!</p>
+                        <p>Total tasks: ${data.length}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Failed to fetch tasks!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Request failed!</p>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Auto-test on load
+        window.onload = () => {
+            console.log('Testing backend connection...');
+            testBackendHealth();
+        };
+    </script>
+</body>
+</html>

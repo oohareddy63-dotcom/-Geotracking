@@ -42,6 +42,19 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
+// Get employee's own updates
+router.get('/my-updates', authenticate, async (req, res) => {
+  try {
+    const updates = await WorkUpdate.find({ employeeId: req.user.userId })
+      .populate('taskId', 'title')
+      .sort({ createdAt: -1 });
+    res.json(updates);
+  } catch (error) {
+    console.error('Get my updates error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Submit work update (employee only)
 router.post('/', authenticate, async (req, res) => {
   try {
@@ -49,13 +62,17 @@ router.post('/', authenticate, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    const { taskId, description, completionPercentage, latitude, longitude, proofImages } = req.body;
+    const { taskId, description, completionPercentage, location, proofImages } = req.body;
 
     // Check if task exists and is assigned to user
     const task = await Task.findOne({ _id: taskId, assignedTo: req.user.userId });
     if (!task) {
       return res.status(404).json({ message: 'Task not found or not assigned to you' });
     }
+
+    // Extract latitude and longitude from location object
+    const latitude = location?.latitude || 0;
+    const longitude = location?.longitude || 0;
 
     // Check geo-fence
     const isGeoVerified = isWithinGeoFence(

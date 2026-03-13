@@ -74,9 +74,11 @@ const ManagerDashboard = ({ user, onLogout }) => {
       const response = await axios.get(`${API_BASE_URL}/api/auth/employees`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Employees fetched:', response.data);
       setEmployees(response.data);
     } catch (error) {
       console.error('Error fetching employees:', error);
+      toast.error('Failed to fetch employees');
     }
   };
 
@@ -85,9 +87,11 @@ const ManagerDashboard = ({ user, onLogout }) => {
       const response = await axios.get(`${API_BASE_URL}/api/reports/dashboard`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Dashboard stats fetched:', response.data);
       setDashboardStats(response.data);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      toast.error('Failed to fetch dashboard stats');
     }
   };
 
@@ -96,9 +100,11 @@ const ManagerDashboard = ({ user, onLogout }) => {
       const response = await axios.get(`${API_BASE_URL}/api/tasks`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Tasks fetched:', response.data);
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      toast.error('Failed to fetch tasks');
     }
   };
 
@@ -107,9 +113,11 @@ const ManagerDashboard = ({ user, onLogout }) => {
       const response = await axios.get(`${API_BASE_URL}/api/updates`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      console.log('Updates fetched:', response.data);
       setUpdates(response.data);
     } catch (error) {
       console.error('Error fetching updates:', error);
+      toast.error('Failed to fetch updates');
     }
   };
 
