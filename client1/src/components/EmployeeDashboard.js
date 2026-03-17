@@ -93,7 +93,6 @@ const EmployeeDashboard = ({ user, onLogout }) => {
       console.error('Error fetching updates:', error);
     }
   };
-
   const handleSendUpdate = async () => {
     setLoading(true);
     try {
@@ -123,7 +122,6 @@ const EmployeeDashboard = ({ user, onLogout }) => {
       setLoading(false);
     }
   };
-
   const handleStartTask = async (taskId) => {
     try {
       await axios.put(`${API_BASE_URL}/api/tasks/${taskId}/status`, {
@@ -151,7 +149,6 @@ const EmployeeDashboard = ({ user, onLogout }) => {
       toast.error('Error completing task');
     }
   };
-
   const handleCreateTask = async () => {
     setLoading(true);
     try {
