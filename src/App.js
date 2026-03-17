@@ -126,7 +126,6 @@ function App() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   };
-
   if (loading) {
     return (
       <div className="loading-container">
