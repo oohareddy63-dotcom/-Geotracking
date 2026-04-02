@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('./models/User');
 const Task = require('./models/Task');
-
 // Load environment variables
 dotenv.config();
 
