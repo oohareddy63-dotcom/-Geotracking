@@ -4,7 +4,6 @@ const User = require('./models/User');
 const Task = require('./models/Task');
 // Load environment variables
 dotenv.config();
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/geotracking')
 .then(() => console.log('MongoDB connected for seeding tasks'))
