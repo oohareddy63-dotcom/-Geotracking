@@ -43,7 +43,6 @@ async function seedUsers() {
     // Insert sample users
     const users = await User.insertMany(sampleUsers);
     console.log('Sample users created:', users.length);
-
     console.log('Seeding completed successfully');
     process.exit(0);
   } catch (error) {
