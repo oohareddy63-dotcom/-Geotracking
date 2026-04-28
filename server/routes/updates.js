@@ -64,10 +64,10 @@ router.post('/', authenticate, async (req, res) => {
 
     const { taskId, description, completionPercentage, location, proofImages } = req.body;
 
-    // Check if task exists and is assigned to user
-    const task = await Task.findOne({ _id: taskId, assignedTo: req.user.userId });
+    // Check if task exists (allow any task the employee can see)
+    const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(404).json({ message: 'Task not found or not assigned to you' });
+      return res.status(404).json({ message: 'Task not found' });
     }
 
     // Extract latitude and longitude from location object
@@ -81,6 +81,21 @@ router.post('/', authenticate, async (req, res) => {
       task.geoFenceRadius
     );
 
+    // Keep full image data including base64
+    const sanitizedImages = (proofImages || []).map(img => {
+      if (typeof img === 'object') {
+        return {
+          name: img.name || 'photo.png',
+          size: img.size || 0,
+          type: img.type || 'image/png',
+          timestamp: img.timestamp || new Date().toISOString(),
+          data: img.data || '',   // keep base64 data
+          geotag: img.geotag || null
+        };
+      }
+      return { data: img, name: 'photo.png', type: 'image/png' };
+    });
+
     const update = new WorkUpdate({
       taskId,
       employeeId: req.user.userId,
@@ -88,7 +103,7 @@ router.post('/', authenticate, async (req, res) => {
       completionPercentage,
       location: { latitude, longitude },
       isGeoVerified,
-      proofImages: proofImages || []
+      proofImages: sanitizedImages
     });
 
     await update.save();

@@ -52,7 +52,19 @@ const workUpdateSchema = new mongoose.Schema({
   },
   
   proofImages: [{
-    type: String // URLs or file paths
+    name: { type: String },
+    size: { type: Number },
+    type: { type: String },
+    timestamp: { type: String },
+    data: { type: String },   // base64 image data
+    geotag: {
+      latitude: { type: String },
+      longitude: { type: String },
+      accuracy: { type: String },
+      altitude: { type: String },
+      timestamp: { type: String },
+      address: { type: String }
+    }
   }],
   
   timestamp: {

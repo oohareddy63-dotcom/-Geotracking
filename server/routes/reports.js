@@ -64,8 +64,8 @@ router.get('/dashboard', authenticate, async (req, res) => {
     console.error('Dashboard error:', error);
     res.status(500).json({ message: 'Server error' });
   }
+  
 });
-
 // Get employee performance report
 router.get('/performance/:employeeId', authenticate, async (req, res) => {
   try {
