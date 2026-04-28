@@ -68,7 +68,6 @@ const ManagerDashboard = ({ user, onLogout }) => {
     fetchUpdates();
     fetchEmployees();
   }, []);
-
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/auth/employees`, {
