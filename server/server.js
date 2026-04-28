@@ -37,10 +37,17 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/updates', require('./routes/updates'));
 app.use('/api/reports', require('./routes/reports'));
 
-// Basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'Employee Work Tracking API' });
-});
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client1/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client1/build', 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.json({ message: 'Employee Work Tracking API' });
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
