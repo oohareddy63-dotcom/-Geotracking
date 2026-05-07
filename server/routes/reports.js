@@ -17,7 +17,6 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 // Get dashboard stats (manager only)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
@@ -40,10 +39,8 @@ router.get('/dashboard', authenticate, async (req, res) => {
     const totalTasks = await Task.countDocuments();
     const completedTasks = await Task.countDocuments({ status: 'completed' });
     const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-
     // Pending updates
     const pendingUpdates = await WorkUpdate.countDocuments({ status: 'pending' });
-
     // Today's attendance
     const todaysAttendance = await Attendance.find({
       date: today
