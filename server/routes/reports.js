@@ -18,7 +18,6 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 // Get dashboard stats (manager only)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
@@ -31,7 +30,6 @@ router.get('/dashboard', authenticate, async (req, res) => {
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
     const activeEmployees = await Attendance.find({
       date: today,
       status: 'active'
@@ -47,7 +45,6 @@ router.get('/dashboard', authenticate, async (req, res) => {
     const todaysAttendance = await Attendance.find({
       date: today
     }).populate('employeeId', 'name');
-
     res.json({
       activeEmployees,
       totalTasks,
