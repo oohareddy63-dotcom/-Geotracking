@@ -4,10 +4,7 @@ const Task = require('../models/Task');
 const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-
-
 const router = express.Router();
-
 // Middleware to verify JWT
 const authenticate = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
