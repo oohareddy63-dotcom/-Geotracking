@@ -165,7 +165,6 @@ router.get('/summary', authenticate, async (req, res) => {
       attendance,
       updates
     });
-    
   } catch (error) {
     console.error('Summary report error:', error);
     res.status(500).json({ message: 'Server error' });
