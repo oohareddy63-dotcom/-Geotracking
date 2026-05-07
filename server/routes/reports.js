@@ -17,6 +17,7 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
+
 // Get dashboard stats (manager only)
 router.get('/dashboard', authenticate, async (req, res) => {
   try {
