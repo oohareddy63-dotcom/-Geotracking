@@ -16,7 +16,6 @@ const authenticate = (req, res, next) => {
     res.status(401).json({ message: 'Invalid token' });
   }
 };
-
 // Get all tasks (for manager) or assigned tasks (for employee)
 router.get('/', authenticate, async (req, res) => {
   try {
