@@ -4,7 +4,6 @@ const Task = require('../models/Task');
 const User = require('../models/User');
 const { isWithinGeoFence } = require('../utils/geo');
 const router = express.Router();
-
 // Middleware to verify JWT (simple for demo)
 const authenticate = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
