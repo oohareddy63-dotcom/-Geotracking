@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const Task = require('../models/Task');
 const User = require('../models/User');
 const { isWithinGeoFence } = require('../utils/geo');
-
 const router = express.Router();
 
 // Middleware to verify JWT (simple for demo)
