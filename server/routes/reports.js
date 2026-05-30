@@ -34,7 +34,6 @@ router.get('/dashboard', authenticate, async (req, res) => {
       date: today,
       status: 'active'
     }).countDocuments();
-
     // Task completion stats
     const totalTasks = await Task.countDocuments();
     const completedTasks = await Task.countDocuments({ status: 'completed' });
